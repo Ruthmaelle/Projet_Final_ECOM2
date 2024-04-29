@@ -11,5 +11,5 @@ $id = $_GET['id'];
 $stmt = $dbco->prepare('DELETE FROM product WHERE id = :id');
 $stmt->execute(['id' => $id]);
 
-header('../Views/manage_products.php');
+header('Location: ../Views/manage_products.php');
 exit();

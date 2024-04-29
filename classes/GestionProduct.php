@@ -16,14 +16,14 @@ class GestionProduct {
 
 
     public function updateProduct($productId, $data) {
-        $sql = "UPDATE product SET name = ?, quantity = ?, price = ?, description = ?, image = ? WHERE id = ?";
+        $sql = "UPDATE product SET name = ?, quantity = ?, price = ?, description = ?, img_url = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             $data['name'], 
             $data['quantity'], 
             $data['price'], 
             $data['description'], 
-            $data['image'], 
+            $data['img_url'], 
             $productId
         ]);
     }

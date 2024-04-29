@@ -92,6 +92,9 @@
       <div class="container">
       Made by Dumas Ruthmaelle
       </div>
+      <div class="container">
+        <a href="./Views/login.php" class="grey-text text-lighten-4">Admin</a>
+      </div>
     </div>
   </footer>
 

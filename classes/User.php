@@ -15,6 +15,7 @@ class User {
         $this->user_name = $us;
         $this->email = $em;
         $this->pwd=$pw;
+        $this->token=$tk;
         $this->role_id=$ri;
     }
 
@@ -34,7 +35,7 @@ class User {
     public function setToken($token){
         $this->token = $token;
     }
-    public function roleID($role_id){
+    public function setroleID($role_id){
         $this->role_id = $role_id;
     }
 

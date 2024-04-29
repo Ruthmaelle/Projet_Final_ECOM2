@@ -1,3 +1,20 @@
+<?php
+session_start();
+
+require_once("../Controllers/flash_messages.php");
+
+// Fonction pour générer un jeton CSRF
+if (!isset($_SESSION['csrf_token'])) {
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Fonction pour generer un nouveau jeton CSRF
+function regenerateCsrfToken() {
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+  return $_SESSION['csrf_token'];
+}
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -14,6 +31,7 @@
 
     <!-- Bootstrap core CSS -->
 <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 
 
     <style>
@@ -55,19 +73,34 @@
 <div class="container max-width-md">
   <div class="col">
     <div class="col-md-9">
-      <form class="form-signin" action="">
+      <form class="form-signin" method="post">
+      <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
         <img class="mb-4" src="../images/newLogo.png" alt="" width="112" height="112">
         <h1 class="h3 mb-3 font-weight-normal">Please sign up</h1>
+        
         <label for="inputUser" class="sr-only">UserName</label>
-        <input type="text" id="inputUser" class="form-control" placeholder="UserName" required autofocus>
-        <br>
+        <input type="text" id="inputUser" name="inputUser" class="form-control" placeholder="UserName" required autofocus>
+        <?php // Afficher les messages d'erreur et réinitialiser la session signup_errors
+        flash('username_error');
+            ?>
+            <br>
+
         <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email Address" required autofocus>
-        <br>
+        <input type="email" id="inputEmail" name="inputEmail" class="form-control" placeholder="Email Address" required autofocus>
+        <?php // Afficher les messages d'erreur et réinitialiser la session signup_errors
+            flash('email_error');
+            ?>
+            <br>
+
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-        <br>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+        <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Password" required>
+        <?php // Afficher les messages d'erreur et réinitialiser la session signup_errors
+            flash('password_error');
+            ?>
+            <br>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit" value="Envoyer" name="envoyer">Sign up</button>
       </form>
     </div>
   </div>
@@ -76,36 +109,117 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-</body>
-</html>
 
 
 <?php
+//j'ai pas encore fait mes validations
 require("../classes/User.php");
 require("../classes/GestionUser.php");
-require("../functions/functions.php");
-include 'functions.php';
+require("../Controllers/functions.php");
+require_once("../classes/ValidateUser.php");
+require_once("../DB/connexion.php");
+$gestionUser = new GestionUser($dbco);
+
 
 
 // Vérifier si le formulaire a été soumis et récupérer les données du formulaire
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['inputUser'];
+extract($_POST);
+
+// Vérifier si la demande est un POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token'])) {
+  if (hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+      // Process the form
+  } else {
+      die("CSRF token mismatch.");
+  }
+}
+
+if (isset($envoyer)) {
+      $_SESSION["form-signin"] = $_POST;
+
+      //reset les messages d'erreurs
+      unset($_SESSION['signup_errors']);
+
+    $username = $a_POST['inputUser'];
     $email = $_POST['inputEmail'];
-    $password = SaltedCode::addSalt($_POST['inputPassword']);
+    $password = ($_POST['inputPassword']);
     $token = hash('sha256', random_bytes(32));
 
     $role_id = 3; //l'id par defaut pour les clients
-    if($username === 'superAdmin' && $email === 'superAdmin@admin.com' && $password==='987654321') {
+    if($username === 'SuperAdmin' && $email === 'superAdmin@admin.teccart' && $password==='987654321') {
       $role_id=1;
     }
 
 
+    // Validation des données
+    $validator = new Validations();
+    // Validation de l'email
+    $emailValidation = $validator->validateEmail($email);
+    // Validation du mot de passe
+    $passwordValidation = $validator->validatePassword($password);
+    // Validation du nom d'utilisateur
+    $usernameValidation = $validator->validateUsername($username);
 
-    $new_User = new User(null, $username, $email, $password, $token, null);
+    // Check validations
+    if (!$usernameValidation->isValid) {
+      flash('username_error', $usernameValidation->message, 'alert alert-danger');
+      exit();
+  }
+  if (!$emailValidation->isValid) {
+      flash('email_error', $emailValidation->message, 'alert alert-danger');
+      exit();
+  }
+  if (!$passwordValidation->isValid) {
+      flash('password_error', $passwordValidation->message, 'alert alert-danger');
+      exit();
+  }
 
-    // Valider les données (vous pouvez ajouter des validations supplémentaires ici)
-    if (empty($username) || empty($email) || empty($password)) {
-        echo "Tous les champs doivent être remplis.";
+    //verification
+    if($usernameValidation->isValid && $emailValidation->isValid && $passwordValidation->isValid) {
+        //eviter les duplications de username et mot de passe
+        if(!$gestionUser->usernameExists($username)) {
+          //les info sont deja utiliser
+          $_SESSION['username_error'] = [
+            'userN' => 'Ce username existe deja',
+            'email' => '',
+            'pwd' => ''
+          ];
+        }elseif (!$gestionUser-> emailExist($email)) {
+          $_SESSION['password_error'] = [
+            'userN' => '',
+            'email' => 'Email deja existant',
+            'pwd' => ''
+          ];
+        }
+      $newPass = SaltedCode::addSalt($password);
+      $new_User = new User(null, $username, $email, $newPass, $token, $role_id);
+      // Ajouter l'utilisateur à la base de données
+      $gestionUser = new GestionUser($dbco);
+      $gestionUser->addUser($new_User);
+      $_SESSION['signed_user'] = [
+        'username' => $username,
+        'password' => $password
+      ];
+      regenerateCsrfToken();
+        header('Location: ../MainPage.php');
+        exit();
+  } else {
+      // Gérer les erreurs de validation
+      /*$_SESSION['signup_errors'] = [
+        'userN' => $usernameValidation->message,
+        'email' => $emailValidation->message,
+        'pwd' => $passwordValidation->message
+      ];*/
+  }
+}
+
+?>
+  </body>
+</html>
+
+<?php
+   /* if (empty($username) || empty($email) || empty($password)) {
+        echo "<script>alert('Tous les champs doivent être remplis.');</script>";
     } else {
         // Connexion à la base de données
         $db_username = "root";
@@ -120,20 +234,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $gestionUser = new GestionUser($conn);
             //ajout d'un nouveau user
             $gestionUser->addUser($new_User);
-            echo "<script>alert('Utilisateur enregistré avec succès.');</script>";
-            header('Location: ');
+            $url = "../index.php";            ;
+            header('Location: ' . $url);
             exit();
         } catch(PDOException $e) {
             echo "Erreur de connexion à la base de données : " . $e->getMessage();
         }
-
-        // Fermer la connexion
-        $conn = null;
+        
     }
 }
 
+*/
 
+/*$validator = new Validations();
 
+    // Validation de l'email
+    $emailValidation = $validator->validateEmail($_POST['email']);
 
+    // Validation du mot de passe
+    $passwordValidation = $validator->validatePassword($_POST['pwd']);
 
+    // Validation du nom d'utilisateur
+    $usernameValidation = $validator->validateUsername($_POST['user_name']);
+
+    // Vérifiez si toutes les validations sont valides
+    if($emailValidation->isValid() && $passwordValidation->isValid() && $usernameValidation->isValid()) {
+        // Les données sont valides, continuez avec le traitement
+        // Ajoutez votre logique ici
+    } else {
+        // Il y a des erreurs de validation, traitez-les en conséquence
+        // Vous pouvez utiliser $emailValidation->getMessage(), $passwordValidation->getMessage(), $usernameValidation->getMessage() pour afficher des messages d'erreur
+    }
+*/
 ?>

@@ -18,7 +18,6 @@ function getListProduit() {
         $statement = $dbco->prepare($query);
         $statement->execute();
 
-         // Récupérer les résultats de la requête sous forme de tableau associatif
         $products = $statement->fetchAll(PDO::FETCH_ASSOC);
         return $products;
     }catch(PDOException $e) {

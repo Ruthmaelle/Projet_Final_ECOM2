@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once("../DB/connexion.php");  // Assurez-vous que la connexion est correcte
+require_once("../DB/connexion.php"); 
 require_once("../classes/GestionUser.php");
 
 $productId = $_POST['productId'];

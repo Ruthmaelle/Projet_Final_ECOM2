@@ -29,7 +29,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         'image' => $_FILES['image']['name']
     ];
 
-    // Handle the image upload
+    //ajouter l'img a partir de mes fichiers poko mache
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $allowed = ['jpg', 'jpeg', 'png', 'webp'];  // Allowed file types
         $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);

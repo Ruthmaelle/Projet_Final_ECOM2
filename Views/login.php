@@ -75,7 +75,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if($user) {
       //user est correct 
-      // User exists, store user ID in session
       $_SESSION['user_id'] = $user['id'];
       //if (password_verify($inputPassword, $user['pass'])) {
         $_SESSION['user_name'] = $user['user_name'];

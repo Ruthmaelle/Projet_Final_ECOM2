@@ -20,7 +20,7 @@ $listeProduits = getListProduit();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <style>
         .product-img {
-            width: 110px; /* Adjust size as needed */
+            width: 110px; 
             height: auto;
         }
     </style>
@@ -46,7 +46,7 @@ $listeProduits = getListProduit();
                 <td><?= htmlspecialchars($product['name']) ?></td>
                 <td><?= htmlspecialchars($product['description']) ?></td>
                 <td>$<?= number_format($product['price'], 2) ?></td>
-                <td><img src="../images/<?php echo $product['img_url']; ?>" alt="Product Image" class="product-img"></td>
+                <td><img src="../images/<?php echo $product['img_url']; ?>" alt="Product Image" class="product-img"></td> <!-- poko mache -->
                 <td>
                     <a href="./edit_product.php?id=<?= $product['id'] ?>" class="btn btn-primary btn-sm">Modify</a>
                     <a href="../Controllers/delete_product.php?id=<?= $product['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>

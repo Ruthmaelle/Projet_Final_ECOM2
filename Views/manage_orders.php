@@ -3,7 +3,6 @@ session_start();
 require_once('../classes/GestionProduct.php');
 require_once('../DB/connexion.php');
 
-// Security check
 if ($_SESSION['user_name'] !== 'SuperAdmin') {
     header('Location: login.php');
     exit();

@@ -128,7 +128,6 @@ extract($_POST);
 // Vérifier si la demande est un POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token'])) {
   if (hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-      // Process the form
   } else {
       die("CSRF token mismatch.");
   }
@@ -176,7 +175,6 @@ if (isset($envoyer)) {
 
     //verification
     if($usernameValidation->isValid && $emailValidation->isValid && $passwordValidation->isValid) {
-        //eviter les duplications de username et mot de passe
         if(!$gestionUser->usernameExists($username)) {
           //les info sont deja utiliser
           $_SESSION['username_error'] = [

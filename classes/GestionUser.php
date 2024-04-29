@@ -1,5 +1,4 @@
 <?php
-//require_once("../DB/connexion.php");
 
 class GestionUser
 {
@@ -20,10 +19,9 @@ class GestionUser
                             $p->getToken(),
                             $p->getRoleID(),
         ));
-        // Retrieve the user ID of the newly registered user
         $userId = $this->bdd->lastInsertId();
 
-        // Store the user ID in the session
+        //Ajouter l'id du nouveau user dans une session
         session_start();
         $_SESSION['user_id'] = $userId;
 

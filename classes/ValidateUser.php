@@ -36,25 +36,3 @@ class ValidationResult {
 ?>
 
 
-
-<!--comment l'appeler dans une autre page
-<php
-require_once('Validator.php');
-
-// Validation d'une adresse e-mail
-$email = "user@example.com";
-if (Validator::validateEmail($email)) {
-    echo "Adresse e-mail valide";
-} else {
-    echo "Adresse e-mail non valide";
-}
-
-// Validation d'un mot de passe
-$password = "password123";
-if (Validator::validatePassword($password)) {
-    echo "Mot de passe valide";
-} else {
-    echo "Mot de passe non valide";
-}
-?>
--->

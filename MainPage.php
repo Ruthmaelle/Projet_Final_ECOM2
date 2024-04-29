@@ -68,7 +68,7 @@ $gestionUser = new GestionUser($dbco);
     <div class="row py-lg-5">
       <div class="col-lg-6 col-md-8 mx-auto">
         <h1 class="fw-light">Self care is the best care</h1>
-        <p class="lead text-body-secondary">Here at Marie_Cedet we sell safe skincare for all types os skin. We believe 'if you look good you will feel good'. So here's the best for your skin</p>
+        <p class="lead text-body-secondary">Here at Marie_Cedet we sell safe skincare for all types of skin. We believe 'if you look good you will feel good'. So here's the best for your skin</p>
         <p>
           <a href="./index.php" class="btn btn-primary my-2">Revenir a la Page Principale</a>
           <a href="./cart.php" class="btn btn-secondary my-2">Mon Panier</a>

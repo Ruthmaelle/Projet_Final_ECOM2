@@ -139,7 +139,7 @@ if (isset($envoyer)) {
       //reset les messages d'erreurs
       unset($_SESSION['signup_errors']);
 
-    $username = $a_POST['inputUser'];
+    $username = $_POST['inputUser'];
     $email = $_POST['inputEmail'];
     $password = ($_POST['inputPassword']);
     $token = hash('sha256', random_bytes(32));

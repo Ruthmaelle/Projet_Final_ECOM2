@@ -32,5 +32,25 @@ class GestionProduct {
         $stmt = $this->db->query('SELECT * FROM user_order ORDER BY date DESC');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function addProduct($data) {
+        //valider
+        if (strlen($data['name']) > 255) {
+            return false; // Name too long
+        }
+        if($data['price'] < 0) {
+            return false;
+        }
+
+        $sql = "INSERT INTO product (name, quantity, price, description, img_url) VALUES (NULL, ?, ?, ?, ?, ?)";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            $data['name'],
+            $data=['quantity'],
+            $data['price'],
+            $data['description'],
+            $data['img_url'],
+        ]);
+    }
 }
 ?>

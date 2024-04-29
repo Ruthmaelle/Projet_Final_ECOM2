@@ -27,9 +27,14 @@ $listeProduits = getListProduit();
 </head>
 <body>
 <div class="container mt-5">
-    <h1>Product Management</h1>
+    <h1>Product Management: </h1>
     <table class="table">
         <thead>
+        <tr>
+            <td>
+                <a href="#" class="btn btn-primary btn-sm">Ajouter Produits</a>
+            </td>
+        </tr>
             <tr>
                 <th>ID</th>
                 <th>Name</th>
@@ -40,8 +45,8 @@ $listeProduits = getListProduit();
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($listeProduits as $product): ?>
             <tr>
+            <?php foreach ($listeProduits as $product): ?>
                 <td><?= htmlspecialchars($product['id']) ?></td>
                 <td><?= htmlspecialchars($product['name']) ?></td>
                 <td><?= htmlspecialchars($product['description']) ?></td>
